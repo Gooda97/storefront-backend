@@ -1,6 +1,6 @@
 import express, {Request, Response} from 'express';
 import dotenv from 'dotenv';
-
+import users_routes from './handlers/user'
 
 //seerver instance
 let app = express();
@@ -14,6 +14,8 @@ const port = PORT
 app.listen(port, () =>{
     console.log(`Server started at port ${port}`);
 });
+
+users_routes(app);
 
 app.get('/', (req: Request, res: Response)=> {
     res.json({

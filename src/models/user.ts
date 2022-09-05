@@ -84,15 +84,15 @@ export class user_table {
         }
     }
     
-    async update (id: number, newdata: User): Promise<User> 
+    async update (newdata: User): Promise<User> 
     {
-        const {username, first_name, last_name, password} = newdata
+        const { id, first_name, last_name, password} = newdata
     
         try 
         {
-            const sql = "UPDATE users SET username = $1, first_name = $2, last_name= $3, password= $4 WHERE id = $5 RETURNING *"
+            const sql = "UPDATE users SET first_name = $1, last_name= $2, password= $3 WHERE id = $4 RETURNING *"
             const conn = await client.connect()
-            const result = await conn.query(sql, [username,first_name, last_name, password, id])
+            const result = await conn.query(sql, [first_name, last_name, password, id])
     
             const user = result.rows[0];
 
