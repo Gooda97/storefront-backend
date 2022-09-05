@@ -1,6 +1,7 @@
 import express, {Request, Response} from 'express';
 import dotenv from 'dotenv';
 import users_routes from './handlers/user'
+import product_routes from './handlers/product'
 
 //seerver instance
 let app = express();
@@ -16,6 +17,7 @@ app.listen(port, () =>{
 });
 
 users_routes(app);
+product_routes(app);
 
 app.get('/', (req: Request, res: Response)=> {
     res.json({

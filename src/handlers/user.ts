@@ -84,7 +84,6 @@ const update = async (req: express.Request, res: express.Response) => {
         const updated = await table.update(user)
         res.json(updated)
     } catch(err) {
-        res.status(400)
         res.json(err)
     }
 }

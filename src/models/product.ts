@@ -1,9 +1,9 @@
+import { QueryResult } from "pg";
 import client from "../database";
 
 export type product = {
   id?: number;
   product_name: string;
-  product_type: string;
   price: number;
 };
 
@@ -37,17 +37,16 @@ export class store {
 
   async create(p : product): Promise<product> {
     try {
-        const sql = 'INSERT INTO products (name, type, price) VALUES($1, $2, $3) RETURNING *'
+        const sql = 'INSERT INTO products (product_name, price) VALUES($1, $2) RETURNING *'
         const conn = await client.connect()
 
-        const result = await conn
-            .query(sql, [p.product_name, p.product_type, p.price])
+        const result = await conn.query(sql, [p.product_name, p.price]);
 
         const prod = result.rows[0];
         conn.release();
         return prod;
     } catch (err) {
-        throw new Error(`${err}`);
+        throw new Error(`Unable to create a new user: ${err}`);
     }
   }
 
@@ -69,12 +68,12 @@ export class store {
   }
 
   async update (prod: product): Promise<product> {
-    const {id, product_name, price, product_type} = prod
+    const {id, product_name, price} = prod
 
     try {
-      const sql = "UPDATE products SET product_name = $1, product_type= $2, price = $3 WHERE id = $4 RETURNING *"
+      const sql = "UPDATE products SET product_name = $1, price = $2 WHERE id = $3 RETURNING *"
       const connection = await client.connect()
-      const result = await connection.query(sql, [product_name, product_type, price, id])
+      const result = await connection.query(sql, [product_name, price, id])
 
       connection.release()
 
