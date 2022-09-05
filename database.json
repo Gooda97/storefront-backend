@@ -1,0 +1,19 @@
+{
+    "defaultEnv": { "ENV": "ENV"},
+    "dev": {
+        "driver": "pg",
+        "host": "localhost",
+        "port": "5432",
+        "database": "my_store",
+        "user": "postgres",
+        "password": "144991952"
+      },
+      "test": {
+        "driver": "pg",
+        "host": "localhost",
+        "port": "5432",
+        "database": "my_store_test",
+        "user": "postgres",
+        "password": "144991952"
+      }
+}
