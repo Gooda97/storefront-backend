@@ -1,5 +1,5 @@
 import client from "../database";
-
+import bcrypt from 'bcrypt'
 
 export type User = {
     id?: number;
@@ -8,6 +8,11 @@ export type User = {
     last_name: string;
     password: string;
   };
+
+const {
+    PEPPER,
+    SALT_ROUNDS
+} = process.env;
 
 export class user_table {
     async index(): Promise<User[]> {
@@ -53,7 +58,7 @@ export class user_table {
         {
           const conn = await client.connect();
           const sql = 'INSERT INTO users (username, first_name, last_name, password) values ($1, $2, $3, $4) RETURNING *';
-          const result = await conn.query(sql, [u.username, u.first_name, u.last_name, u.password]);
+          const result = await conn.query(sql, [u.username, u.first_name, u.last_name, (bcrypt.hashSync(`${u.password}${PEPPER}`, parseInt(SALT_ROUNDS as unknown as string)).toString())]);
           const user = result.rows[0];
           conn.release();
           return user;
@@ -92,7 +97,7 @@ export class user_table {
         {
             const sql = "UPDATE users SET first_name = $1, last_name= $2, password= $3 WHERE id = $4 RETURNING *"
             const conn = await client.connect()
-            const result = await conn.query(sql, [first_name, last_name, password, id])
+            const result = await conn.query(sql, [first_name, last_name, (bcrypt.hashSync(`${password}${PEPPER}`, parseInt(SALT_ROUNDS as unknown as string)).toString()), id])
     
             const user = result.rows[0];
 
@@ -102,6 +107,24 @@ export class user_table {
         } 
         catch (err) 
         {
+            throw new Error(`${err}`)
+        }
+    }
+    async authenticate (username: string, password: string): Promise<boolean> {
+        try{
+            const conn = await client.connect();
+            const sql = 'SELECT password FROM users WHERE username=$1';
+            const result = await conn.query(sql, [username]);
+            if(result.rows.length !=0) {
+                if(bcrypt.compareSync(`${password}${PEPPER}`, result.rows[0].password)) {
+                    return true;
+                }
+                conn.release();
+                return false;
+            }
+            conn.release();
+            return false;
+        }catch(err) {
             throw new Error(`${err}`)
         }
     }
