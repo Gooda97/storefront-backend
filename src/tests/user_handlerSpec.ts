@@ -1,220 +1,117 @@
-// import supertest from 'supertest';
-// import client from '../database';
-// import {User, user_table} from '../models/user';
-// import app from '..';
-// import bcrypt from 'bcrypt'
+import supertest from "supertest"
 
-// const table = new user_table();
-// const request = supertest(app);
-// let token = '';
+import app from "../index"
+import User, { user_table } from "../models/user"
 
-// const {PEPPER} = process.env;
 
-// describe('User API Endpoints', () => {
-//   const user: User = {
-//     username: 'test1',
-//     first_name: 'test_f',
-//     last_name: 'test_l',
-//     password: 'pass123',
-//   };
+const Table = new user_table();
 
-//   (async () => {
-//     const newUser = await table.create(user);
-//     user.id = newUser.id;
-//   })();
+const request = supertest(app)
 
-//   describe('Test Authenticate methods', () => {
-//     it('authinticate success', async () => {
-//       const res = await request
-//         .post('/users/authenticate')
-//         .send({
-//           username: user.username,
-//           password: user.password,
-//         });
-//       expect(res.status).toBe(200);
-//       const { message, token: gettoken } = res.body.data;
-//       expect(message).toBe('Authintication success');
-//       token = gettoken;
-//     });
+describe("User Handler", () => {
+  let tok: string, userId: number
+  let userData: User;
 
-//     it('unauthorized access', async () => {
-//       const res = await request
-//         .post('/users/authenticate')
-//         .send({
-//           username: user.username,
-//           password: 'test123',
-//         });
-//       expect(res.status).toBe(401);
-//       expect(res.body.data.message).toBe('Unauthorized access denied')
-//     });
-//   });
+  beforeAll(async () => {
+      userData = {
+      username: "test_user",
+      first_name: "f",
+      last_name: "l",
+      password: "123"
+    }
 
-//   describe('Routes', () => {
-//     it('create', async () => {
-//       const res = await request
-//         .post('/users/create')
-//         .send({
-//           username: 'test2',
-//           first_name: 'test_f2',
-//           last_name: 'test_l2',
-//           password: 'test123',
-//         });
-//       expect(res.status).toBe(200);
-//       const { username, first_name, last_name } = res.body.data;
-//       expect(username).toBe('test2');
-//       expect(first_name).toBe('test_f2');
-//       expect(last_name).toBe('test_l2');
-//     });
+    const res1 = await Table.create(userData)
+    const res2 = await request.post("/users/authenticate").send(userData)
+    console.log(res1)
+    console.log(res2.body)
+    const {token} = res2.body
+    tok = token
+    userId = res1.id as unknown as number
+  })
 
-//     it('index', async () => {
-//       const res = await request
-//         .get('/users/')
-//         .set('Authorization', `Bearer ${token}`);
-//       expect(res.status).toBe(200);
-//       expect(res.body.data.length).toBe(2);
-//     });
+  it("gets the create endpoint", (done) => {
+    request
+    .post("/users/create")
+    .send(userData).set("Authorization", "bearer " + tok)
+    .then((res) => {
+      const {status} = res
+      expect(status).toBe(200)
+      done()
+    })
+  })
 
-//     it('show', async () => {
-//       const res = await request
-//         .get(`/users/${user.id}`)
-//         .set('Authorization', `Bearer ${token}`);
-//       expect(res.status).toBe(200);
-//       expect(res.body.data.username).toBe(user.username);
-//     });
+  it("gets the index endpoint", (done) => {
+    request
+    .get("/users")
+    .set("Authorization", "bearer " + tok)
+    .then((res) => {
+      expect(res.status).toBe(200)
+      done()
+    })
+  })
 
-//     it('update', async () => {
-//       const res = await request
-//         .put(`users/${user.id}`)
-//         .set('Authorization', `Bearer ${token}`)
-//         .send({
-//           first_name: 'f1',
-//           last_name: 'l1',
-//           password: 'pass'
-//         });
-//       expect(res.status).toBe(200);
+  it("gets the read endpoint", (done) => {
+    request
+    .get(`/users/${userId}`)
+    .set("Authorization", "bearer " + tok)
+    .then((res) => {
+      expect(res.status).toBe(200)
+      done()
+    })
+  })
 
-//       const { id, username, first_name, last_name, password } = res.body.data;
-//       expect(id).toBe(user.id);
-//       expect(username).toBe(user.username);
-//       expect(first_name).toBe('f1');
-//       expect(last_name).toBe('l1');
-//       expect(bcrypt.compareSync(`pass${PEPPER}`, password)).toBe(true)
-//     });
+  it("gets the update endpoint", (done) => {
+    const newUserData: User = {
+      ...userData,
+      first_name: "test11",
+      last_name: "test22"
+    }
 
-//     it('delete', async () => {
-//       const res = await request
-//         .delete(`/users/${user.id}`)
-//         .set('Authorization', `Bearer ${token}`);
-//       expect(res.status).toBe(200);
-//       expect(res.body.data.id).toBe(user.id);
-//       expect(res.body.data.user_name).toBe(user.username);
-//     });
-//   });
+    request
+    .put(`/users/${userId}`)
+    .send(newUserData)
+    .set("Authorization", "bearer " + tok)
+    .then((res) => {
+      expect(res.status).toBe(200)
+      done()
+    })
+  })
 
-//   (async () => {
-//     const connection = await client.connect();
-//     const sql = 'DELETE FROM users;';
-//     await connection.query(sql);
-//     connection.release();
-//   })();
+  it("gets the auth endpoint", (done) => {
+    request
+    .post("/users/authenticate")
+    .send({
+      username: userData.username,
+      password: userData.password
+    })
+    .set("Authorization", "bearer " + tok)
+    .then((res) => {
+      expect(res.status).toBe(200)
+      done()
+    })
+  })
 
-// });
+  it("gets the auth endpoint with wrong password", (done) => {
+    request
+    .post("/users/authenticate")
+    .send({
+      username: userData.username,
+      password: "wrongpw"
+    })
+    .set("Authorization", "bearer " + tok)
+    .then((res) => {
+      expect(res.status).toBe(401)
+      done()
+    })
+  })
 
-//----------------------------------------------------------
-
-// import supertest from "supertest"
-// import app from "../index"
-// import { User, user_table } from "../models/user"
-
-// const Table = new user_table();
-
-// const test = supertest(app);
-
-// let user: User = {
-//     username: "test",
-//     first_name: "fname",
-//     last_name: "lname",
-//     password: "123"
-// };
-
-// let newuser: User;
-// let id: number;
-
-// beforeAll (async () =>{
-//     newuser = await Table.create(user);
-//     id = newuser.id as unknown as number;
-// });
-
-//   let token: string;
-
-//   it("authorization", () => {
-//     test.get("/users").then((res) => {
-//       expect(res.status).toBe(401)
-//     })
-
-//     test.get(`/users/${id}`).then((res) => {
-//       expect(res.status).toBe(401)
-//     })
-
-//     test.put(`/users/${id}`).send({
-//             username: 'test_user', first_name:"f", last_name: "l", password: "111"
-//         }).then((res) => {
-//       expect(res.status).toBe(401)
-//     })
-
-//     test.delete(`/users/${id}`).then((res) => {
-//       expect(res.status).toBe(401)
-//     })
-//   })
-
-//   it("authorization success", () => {
-//     test.post("/users/authenticate").send({username: user.username,
-//         password: user.password}).then((res) => {
-//         expect(res.status).toBe(200);
-//         expect(res.body.message).toBe("Authintication success");
-//         token = res.body.token;
-//         })
-//     })
-
-//     // it("authorization fail", () => {
-//     //     test.post("/users/authenticate").send({username: user.username,
-//     //         password: "122"}).then((res) => {
-//     //         expect(res.status).toBe(401);
-//     //         })
-//     // })
-
-//   it("index", () => {
-//     test.get("/users").set("Authorization", `bearer ${token}`).then((res) => {
-//       expect(res.status).toBe(200)
-//     })
-//   })
-
-//   it("show", () => {
-//     test.get(`/users/${id}`).set("Authorization", `bearer ${token}`).then((res) => {
-//       expect(res.status).toBe(200)
-//     })
-//   })
-
-//   it("update", () => {
-//     const newuser: User = {
-//       username: 'test11',
-//       first_name: 'f1',
-//       last_name: 'l1',
-//       password: 'pass1'
-//     }
-
-//     test.put(`/users/${id}`).send(newuser).set("Authorization", `bearer ${token}`).then((res) => {
-//       expect(res.status).toBe(200)
-//     })
-//   })
-
-//   it("delete", () => {
-//     test.delete(`/users/${id}`).set("Authorization", `bearer ${token}`).then((res) => {
-//       expect(res.status).toBe(200)
-//     })
-//   })
-
-//   afterAll (async () =>{
-//     await Table.delete(id);
-// });
-
+  it("gets the delete endpoint", (done) => {
+    request
+    .delete(`/users/${userId}`)
+    .set("Authorization", "bearer " + tok)
+    .then((res) => {
+      expect(res.status).toBe(200)
+      done()
+    })
+  })
+})

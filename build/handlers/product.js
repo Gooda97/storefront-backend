@@ -37,6 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var product_1 = require("../models/product");
+var jwt = require('jsonwebtoken');
+var TOKEN_SECRET = process.env.TOKEN_SECRET;
 var Store = new product_1.store();
 var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var list;
@@ -133,11 +135,34 @@ var update = function (req, res) { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); };
+function checkAuth(req, res, next) {
+    if (!req.headers.authorization) {
+        res.status(401);
+        res.json({ message: "Unauthorized access denied" });
+        return false;
+    }
+    try {
+        var token = req.headers.authorization.split(" ")[1];
+        if (jwt.verify(token, TOKEN_SECRET)) {
+            next();
+        }
+        else {
+            res.status(401);
+            res.json({ message: "Unauthorized access denied" });
+            return false;
+        }
+    }
+    catch (err) {
+        console.error(err);
+        res.status(401);
+        return false;
+    }
+}
 var product_routes = function (app) {
     app.get('/products', index);
-    app.get('/products/:id', show);
-    app.post('/products/create', create);
-    app.put('/products/:id', update);
-    app.delete('/products/:id', destroy);
+    app.get('/products/:id', checkAuth, show);
+    app.post('/products/create', checkAuth, create);
+    app.put('/products/:id', checkAuth, update);
+    app.delete('/products/:id', checkAuth, destroy);
 };
 exports.default = product_routes;

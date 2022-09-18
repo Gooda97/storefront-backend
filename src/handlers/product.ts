@@ -1,5 +1,12 @@
 import express, {Request, Response} from 'express';
 import { product, store } from '../models/product';
+import {Secret}  from 'jsonwebtoken';
+
+const jwt = require('jsonwebtoken');
+
+const {
+  TOKEN_SECRET
+} = process.env;
 
 const Store = new store();
 
@@ -50,12 +57,35 @@ const update = async (req: Request, res: Response) => {
   }
 }
 
+function checkAuth (req: Request, res: Response, next: express.NextFunction): void | boolean {
+  if (!req.headers.authorization) {
+    res.status(401)
+    res.json({message: "Unauthorized access denied"})
+    return false
+  }
+  try {
+    const token = req.headers.authorization.split(" ")[1] 
+    if(jwt.verify(token, TOKEN_SECRET as unknown as Secret)) {
+      next();
+    }
+    else{
+      res.status(401);
+      res.json({message: "Unauthorized access denied"});
+      return false;
+    }
+  } catch (err) {
+    console.error(err)
+    res.status(401)
+    return false
+  }
+}
+
 const product_routes = (app: express.Application) => {
   app.get('/products', index) 
-  app.get('/products/:id', show) 
-  app.post('/products/create' ,create)
-  app.put('/products/:id', update)
-  app.delete('/products/:id', destroy)
+  app.get('/products/:id', checkAuth, show) 
+  app.post('/products/create' , checkAuth,create)
+  app.put('/products/:id', checkAuth, update)
+  app.delete('/products/:id', checkAuth, destroy)
 };
 
 export default product_routes;

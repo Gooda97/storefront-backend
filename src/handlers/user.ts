@@ -109,7 +109,7 @@ const destroyAll = async (_req: Request, res: Response) => {
 const users_routes = (app: express.Application) => {
   app.get('/users', checkAuth, index);
   app.get('/users/:id', checkAuth, show);
-  app.post('/users/create', checkAuth, create);
+  app.post('/users/create', create);
   app.delete('/users/:id', checkAuth, destroy);
   app.put("/users/:id", checkAuth, update)
   app.post('/users/authenticate', authenticate);

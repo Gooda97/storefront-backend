@@ -61,7 +61,6 @@ export class user_table {
           const result = await conn.query(sql, [u.username, u.first_name, u.last_name, (bcrypt.hashSync(`${u.password}${PEPPER}`, parseInt(SALT_ROUNDS as unknown as string)).toString())]);
           const user = result.rows[0];
           conn.release();
-          console.log("++++++++++++++++++++++++++++++"+user.id)
           return user;
         } catch (err) 
         {

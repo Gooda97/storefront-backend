@@ -43,35 +43,43 @@ var supertest_1 = __importDefault(require("supertest"));
 var index_1 = __importDefault(require("../index"));
 var user_1 = require("../models/user");
 var request = (0, supertest_1.default)(index_1.default);
-describe("Product Handler", function () {
-    var prod = {
-        product_name: "tset",
-        price: 100
-    };
-    var Table = new user_1.user_table();
-    var tok, userId, productId;
+var SECRET = process.env.TOKEN_SECRET;
+describe("Order Handler", function () {
+    var Table = new user_1.user_table(), token, order, user_id, product_id, order_id;
     beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var userData, res1, res2, token;
+        var userData, productData, res, res2, body;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     userData = {
-                        username: "test_user",
-                        first_name: "f",
-                        last_name: "l",
-                        password: "123"
+                        username: "ordertester",
+                        first_name: "Order",
+                        last_name: "Tester",
+                        password: "password123"
+                    };
+                    productData = {
+                        product_name: "test_prod",
+                        price: 100
                     };
                     return [4 /*yield*/, Table.create(userData)];
                 case 1:
-                    res1 = _a.sent();
+                    res = _a.sent();
                     return [4 /*yield*/, request.post("/users/authenticate").send(userData)];
                 case 2:
                     res2 = _a.sent();
-                    console.log(res1);
-                    console.log(res2.body);
                     token = res2.body.token;
-                    tok = token;
-                    userId = res1.id;
+                    user_id = res.id;
+                    return [4 /*yield*/, request.post("/products/create").set("Authorization", "bearer " + token).send(productData)];
+                case 3:
+                    body = (_a.sent()).body;
+                    product_id = body.id;
+                    order = {
+                        products: [{
+                                product_id: product_id,
+                                quantity: 5
+                            }],
+                        user_id: user_id
+                    };
                     return [2 /*return*/];
             }
         });
@@ -79,8 +87,11 @@ describe("Product Handler", function () {
     afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.delete("/users/".concat(userId)).set("Authorization", "bearer " + tok)];
+                case 0: return [4 /*yield*/, request.delete("/users/".concat(user_id)).set("Authorization", "bearer " + token)];
                 case 1:
+                    _a.sent();
+                    return [4 /*yield*/, request.delete("/products/".concat(product_id)).set("Authorization", "bearer " + token)];
+                case 2:
                     _a.sent();
                     return [2 /*return*/];
             }
@@ -88,48 +99,53 @@ describe("Product Handler", function () {
     }); });
     it("gets the create endpoint", function (done) {
         request
-            .post("/products/create")
-            .send(prod)
-            .set("Authorization", "bearer " + tok)
+            .post("/orders/create")
+            .send(order)
+            .set("Authorization", "bearer " + token)
             .then(function (res) {
             var body = res.body, status = res.status;
             expect(status).toBe(200);
-            productId = body.id;
+            order_id = body.id;
             done();
         });
     });
     it("gets the index endpoint", function (done) {
         request
-            .get("/products")
+            .get("/orders")
+            .set("Authorization", "bearer " + token)
             .then(function (res) {
             expect(res.status).toBe(200);
             done();
         });
     });
-    it("gets the show endpoint", function (done) {
+    it("gets the read endpoint", function (done) {
         request
-            .get("/products/".concat(productId)).set("Authorization", "bearer " + tok)
+            .get("/orders/".concat(order_id))
+            .set("Authorization", "bearer " + token)
             .then(function (res) {
             expect(res.status).toBe(200);
             done();
         });
     });
     it("gets the update endpoint", function (done) {
-        var newProductData = {
-            product_name: "new",
-            price: 900
+        var newOrder = {
+            products: [{
+                    product_id: product_id,
+                    quantity: 10
+                }],
+            user_id: user_id
         };
         request
-            .put("/products/".concat(productId))
-            .send(newProductData)
-            .set("Authorization", "bearer " + tok)
+            .put("/orders/".concat(order_id))
+            .send(newOrder)
+            .set("Authorization", "bearer " + token)
             .then(function (res) {
             expect(res.status).toBe(200);
             done();
         });
     });
     it("gets the delete endpoint", function (done) {
-        request.delete("/products/".concat(productId)).set("Authorization", "bearer " + tok)
+        request.delete("/orders/".concat(order_id)).set("Authorization", "bearer " + token)
             .then(function (res) {
             expect(res.status).toBe(200);
             done();

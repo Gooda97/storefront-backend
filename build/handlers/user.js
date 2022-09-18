@@ -200,7 +200,7 @@ var destroyAll = function (_req, res) { return __awaiter(void 0, void 0, void 0,
 var users_routes = function (app) {
     app.get('/users', checkAuth, index);
     app.get('/users/:id', checkAuth, show);
-    app.post('/users/create', checkAuth, create);
+    app.post('/users/create', create);
     app.delete('/users/:id', checkAuth, destroy);
     app.put("/users/:id", checkAuth, update);
     app.post('/users/authenticate', authenticate);

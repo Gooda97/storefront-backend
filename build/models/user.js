@@ -110,7 +110,6 @@ var user_table = /** @class */ (function () {
                         result = _a.sent();
                         user = result.rows[0];
                         conn.release();
-                        console.log("++++++++++++++++++++++++++++++" + user.id);
                         return [2 /*return*/, user];
                     case 3:
                         err_3 = _a.sent();
