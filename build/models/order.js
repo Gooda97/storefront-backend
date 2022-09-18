@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -39,14 +50,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.user_table = void 0;
+exports.orderClass = void 0;
 var database_1 = __importDefault(require("../database"));
-var bcrypt_1 = __importDefault(require("bcrypt"));
-var _a = process.env, PEPPER = _a.PEPPER, SALT_ROUNDS = _a.SALT_ROUNDS;
-var user_table = /** @class */ (function () {
-    function user_table() {
+var orderClass = /** @class */ (function () {
+    function orderClass() {
     }
-    user_table.prototype.index = function () {
+    orderClass.prototype.index = function () {
         return __awaiter(this, void 0, void 0, function () {
             var conn, sql, result, err_1;
             return __generator(this, function (_a) {
@@ -56,7 +65,7 @@ var user_table = /** @class */ (function () {
                         return [4 /*yield*/, database_1.default.connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT * FROM users';
+                        sql = 'SELECT * FROM orders';
                         return [4 /*yield*/, conn.query(sql)];
                     case 2:
                         result = _a.sent();
@@ -64,20 +73,20 @@ var user_table = /** @class */ (function () {
                         return [2 /*return*/, result.rows];
                     case 3:
                         err_1 = _a.sent();
-                        throw new Error("unable to get users: ".concat(err_1));
+                        throw new Error("".concat(err_1));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    user_table.prototype.show = function (id) {
+    orderClass.prototype.show = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var sql, conn, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        sql = 'SELECT * FROM users WHERE id=($1)';
+                        sql = 'SELECT * FROM orders WHERE id=$1';
                         return [4 /*yield*/, database_1.default.connect()];
                     case 1:
                         conn = _a.sent();
@@ -88,83 +97,123 @@ var user_table = /** @class */ (function () {
                         return [2 /*return*/, result.rows[0]];
                     case 3:
                         err_2 = _a.sent();
-                        throw new Error("unable show the user wit id: ".concat(id, " .. ").concat(err_2));
+                        throw new Error("Error: ".concat(err_2));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    user_table.prototype.create = function (u) {
+    orderClass.prototype.create = function (order) {
         return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, user, err_3;
+            var products, user_id, sql, conn, result, order_1, sql1, ordered, _i, products_1, product, product_id, quantity, res, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, database_1.default.connect()];
-                    case 1:
-                        conn = _a.sent();
-                        sql = 'INSERT INTO users (username, first_name, last_name, password) values ($1, $2, $3, $4) RETURNING *';
-                        return [4 /*yield*/, conn.query(sql, [u.username, u.first_name, u.last_name, (bcrypt_1.default.hashSync("".concat(u.password).concat(PEPPER), parseInt(SALT_ROUNDS)).toString())])];
-                    case 2:
-                        result = _a.sent();
-                        user = result.rows[0];
-                        conn.release();
-                        console.log("++++++++++++++++++++++++++++++" + user.id);
-                        return [2 /*return*/, user];
-                    case 3:
-                        err_3 = _a.sent();
-                        throw new Error("Unable to create a new user: ".concat(err_3));
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    user_table.prototype.delete = function (id) {
-        return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, user, err_4;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, database_1.default.connect()];
-                    case 1:
-                        conn = _a.sent();
-                        sql = 'DELETE FROM users WHERE id=($1) RETURNING *';
-                        return [4 /*yield*/, conn.query(sql, [id])];
-                    case 2:
-                        result = _a.sent();
-                        user = result.rows[0];
-                        conn.release();
-                        return [2 /*return*/, user];
-                    case 3:
-                        err_4 = _a.sent();
-                        throw new Error("unable delete user (".concat(id, "): ").concat(err_4));
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    user_table.prototype.update = function (newdata) {
-        return __awaiter(this, void 0, void 0, function () {
-            var id, first_name, last_name, password, sql, conn, result, user, err_5;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        id = newdata.id, first_name = newdata.first_name, last_name = newdata.last_name, password = newdata.password;
+                        products = order.products, user_id = order.user_id;
                         _a.label = 1;
                     case 1:
-                        _a.trys.push([1, 4, , 5]);
-                        sql = "UPDATE users SET first_name = $1, last_name= $2, password= $3 WHERE id = $4 RETURNING *";
+                        _a.trys.push([1, 8, , 9]);
+                        sql = "INSERT INTO orders (user_id) VALUES ($1) RETURNING *";
                         return [4 /*yield*/, database_1.default.connect()];
                     case 2:
                         conn = _a.sent();
-                        return [4 /*yield*/, conn.query(sql, [first_name, last_name, (bcrypt_1.default.hashSync("".concat(password).concat(PEPPER), parseInt(SALT_ROUNDS)).toString()), id])];
+                        return [4 /*yield*/, conn.query(sql, [user_id])];
                     case 3:
                         result = _a.sent();
-                        user = result.rows[0];
+                        order_1 = result.rows[0];
+                        sql1 = "INSERT INTO orders_products (order_id, product_id, quantity) VALUES($1, $2, $3) RETURNING product_id, quantity";
+                        ordered = [];
+                        _i = 0, products_1 = products;
+                        _a.label = 4;
+                    case 4:
+                        if (!(_i < products_1.length)) return [3 /*break*/, 7];
+                        product = products_1[_i];
+                        product_id = product.product_id, quantity = product.quantity;
+                        return [4 /*yield*/, conn.query(sql1, [order_1.id, product_id, quantity])];
+                    case 5:
+                        res = _a.sent();
+                        ordered.push(res.rows[0]);
+                        _a.label = 6;
+                    case 6:
+                        _i++;
+                        return [3 /*break*/, 4];
+                    case 7:
                         conn.release();
-                        return [2 /*return*/, user];
+                        return [2 /*return*/, __assign(__assign({}, order_1), { products: ordered })];
+                    case 8:
+                        err_3 = _a.sent();
+                        throw new Error("Could not add new order for user ".concat(user_id, ". ").concat(err_3));
+                    case 9: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    orderClass.prototype.update = function (newData) {
+        return __awaiter(this, void 0, void 0, function () {
+            var id, products, user_id, sql, conn, result, order, orderProductsSql, orderProducts, _i, products_2, product, product_id, quantity, res, err_4;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        id = newData.id, products = newData.products, user_id = newData.user_id;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 8, , 9]);
+                        sql = "UPDATE orders SET user_id = $1 WHERE id = $2 RETURNING *";
+                        return [4 /*yield*/, database_1.default.connect()];
+                    case 2:
+                        conn = _a.sent();
+                        return [4 /*yield*/, conn.query(sql, [user_id, id])];
+                    case 3:
+                        result = _a.sent();
+                        order = result.rows[0];
+                        orderProductsSql = "UPDATE orders_products SET product_id = $1, quantity = $2 WHERE order_id = $3 RETURNING product_id, quantity";
+                        orderProducts = [];
+                        _i = 0, products_2 = products;
+                        _a.label = 4;
+                    case 4:
+                        if (!(_i < products_2.length)) return [3 /*break*/, 7];
+                        product = products_2[_i];
+                        product_id = product.product_id, quantity = product.quantity;
+                        return [4 /*yield*/, conn.query(orderProductsSql, [product_id, quantity, order.id])];
+                    case 5:
+                        res = _a.sent();
+                        orderProducts.push(res.rows[0]);
+                        _a.label = 6;
+                    case 6:
+                        _i++;
+                        return [3 /*break*/, 4];
+                    case 7:
+                        conn.release();
+                        return [2 /*return*/, __assign(__assign({}, order), { products: orderProducts })];
+                    case 8:
+                        err_4 = _a.sent();
+                        throw new Error("Could not update order for user ".concat(user_id, ". ").concat(err_4));
+                    case 9: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    orderClass.prototype.delete = function (id) {
+        return __awaiter(this, void 0, void 0, function () {
+            var sql1, sql, conn, result, result2, ord, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 4, , 5]);
+                        sql1 = 'DELETE FROM orders_products WHERE order_id=$1';
+                        sql = 'DELETE FROM orders WHERE id=$1 RETURNING *';
+                        return [4 /*yield*/, database_1.default.connect()];
+                    case 1:
+                        conn = _a.sent();
+                        return [4 /*yield*/, conn.query(sql1, [id])];
+                    case 2:
+                        result = _a.sent();
+                        return [4 /*yield*/, conn.query(sql, [id])];
+                    case 3:
+                        result2 = _a.sent();
+                        ord = result2.rows[0];
+                        conn.release();
+                        return [2 /*return*/, ord];
                     case 4:
                         err_5 = _a.sent();
                         throw new Error("".concat(err_5));
@@ -173,58 +222,6 @@ var user_table = /** @class */ (function () {
             });
         });
     };
-    user_table.prototype.authenticate = function (username, password) {
-        return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, err_6;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, database_1.default.connect()];
-                    case 1:
-                        conn = _a.sent();
-                        sql = 'SELECT password FROM users WHERE username=$1';
-                        return [4 /*yield*/, conn.query(sql, [username])];
-                    case 2:
-                        result = _a.sent();
-                        if (result.rows.length != 0) {
-                            if (bcrypt_1.default.compareSync("".concat(password).concat(PEPPER), result.rows[0].password)) {
-                                return [2 /*return*/, true];
-                            }
-                            conn.release();
-                            return [2 /*return*/, false];
-                        }
-                        conn.release();
-                        return [2 /*return*/, false];
-                    case 3:
-                        err_6 = _a.sent();
-                        throw new Error("".concat(err_6));
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    user_table.prototype.deleteAll = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, del, err_7;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, database_1.default.connect()];
-                    case 1:
-                        conn = _a.sent();
-                        sql = 'DELETE FROM users';
-                        del = conn.query(sql);
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_7 = _a.sent();
-                        throw new Error("".concat(err_7));
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    return user_table;
+    return orderClass;
 }());
-exports.user_table = user_table;
+exports.orderClass = orderClass;

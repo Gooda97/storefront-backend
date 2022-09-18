@@ -32,6 +32,7 @@ const create = async (_req: express.Request, res: express.Response) => {
   try {
     const newUser = await table.create(user);
     res.json({user: newUser});
+    console.log(newUser.id)
   } catch(err) {
     res.json(err);
   }
@@ -63,7 +64,7 @@ const authenticate = async (_req: Request, res: Response) => {
 function checkAuth (req: Request, res: Response, next: express.NextFunction): void | boolean {
   if (!req.headers.authorization) {
     res.status(401)
-    res.json("Unauthorized access denied")
+    res.json({message: "Unauthorized access denied"})
     return false
   }
   try {
@@ -73,7 +74,7 @@ function checkAuth (req: Request, res: Response, next: express.NextFunction): vo
     }
     else{
       res.status(401);
-      res.json("Unauthorized access denied");
+      res.json({message: "Unauthorized access denied"});
       return false;
     }
   } catch (err) {
@@ -100,6 +101,11 @@ const update = async (req: express.Request, res: express.Response) => {
     }
 }
 
+const destroyAll = async (_req: Request, res: Response) => {
+  const deleted = await table.deleteAll()
+  res.json(deleted)
+}
+
 const users_routes = (app: express.Application) => {
   app.get('/users', checkAuth, index);
   app.get('/users/:id', checkAuth, show);
@@ -107,6 +113,8 @@ const users_routes = (app: express.Application) => {
   app.delete('/users/:id', checkAuth, destroy);
   app.put("/users/:id", checkAuth, update)
   app.post('/users/authenticate', authenticate);
+  app.delete('/deleteAllUsers', checkAuth, destroyAll);
+
 };
 
 export default users_routes;

@@ -61,6 +61,7 @@ export class user_table {
           const result = await conn.query(sql, [u.username, u.first_name, u.last_name, (bcrypt.hashSync(`${u.password}${PEPPER}`, parseInt(SALT_ROUNDS as unknown as string)).toString())]);
           const user = result.rows[0];
           conn.release();
+          console.log("++++++++++++++++++++++++++++++"+user.id)
           return user;
         } catch (err) 
         {
@@ -73,7 +74,7 @@ export class user_table {
         try 
         {
             const conn = await client.connect();
-            const sql = 'DELETE FROM users WHERE id=($1)';
+            const sql = 'DELETE FROM users WHERE id=($1) RETURNING *';
             
             const result = await conn.query(sql, [id])
 
@@ -126,6 +127,19 @@ export class user_table {
             return false;
         }catch(err) {
             throw new Error(`${err}`)
+        }
+    }
+    async deleteAll()
+    {
+        try 
+        {
+            const conn = await client.connect();
+            const sql = 'DELETE FROM users';
+            const del = conn.query(sql);
+        }
+        catch(err)
+        {
+          throw new Error(`${err}`)
         }
     }
 }

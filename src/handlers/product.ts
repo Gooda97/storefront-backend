@@ -25,19 +25,6 @@ const create = async (_req: Request, res: Response) => {
       res.json(err);
     }
   }
-// const create = async(_req: Request, res: Response) => {
-//   const prod: product = {
-//     product_name: _req.body.product_name,
-//     product_type: _req.body.product_type,
-//     price: _req.body.price
-//   }
-//   try {
-//     const newProduct = await Store.create(prod);
-//     res.json(newProduct);
-//   } catch (err) {
-//     res.json(err);
-//   }
-// }
 
 const destroy = async (req: Request, res: Response) => {
   try{

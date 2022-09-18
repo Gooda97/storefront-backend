@@ -1,11 +1,10 @@
 import express, {Request, Response} from 'express';
-import { order, ordreClass } from '../models/order';
+import { order, orderClass } from '../models/order';
 import {Secret}  from 'jsonwebtoken';
-import client from '../database';
 
 const jwt = require('jsonwebtoken');
 
-const OrderClass = new ordreClass();
+const OrderClass = new orderClass();
 
 const {
   TOKEN_SECRET
@@ -21,6 +20,18 @@ const show = async (_req: Request, res: Response) => {
   res.json(prod)
 };
 
+const create = async (_req: Request, res: Response) => {
+  const ord = {
+    user_id: _req.body.user_id,
+    products: _req.body.products
+  }
+  try {
+    const ordered = await OrderClass.create(ord);
+    res.json(ordered);
+  } catch(err) {
+    res.json(err);
+  }
+}
 
 function checkAuth (req: Request, res: Response, next: express.NextFunction): void | boolean {
     if (!req.headers.authorization) {
@@ -74,7 +85,7 @@ const destroy = async (req: Request, res:Response) => {
 const products_routes = (app: express.Application) => {
   app.get('/orders', index)
   app.get('/orders/:id', checkAuth, show)
-//   app.post('/orders/create',checkAuth ,create)
+  app.post('/orders/create',checkAuth ,create)
   app.put('/orders/:id',checkAuth, update)
   app.delete('/orders/:id',checkAuth, destroy)
 };

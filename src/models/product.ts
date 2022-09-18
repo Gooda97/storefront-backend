@@ -71,7 +71,7 @@ export class store {
     const {id, product_name, price} = prod
 
     try {
-      const sql = "UPDATE products SET product_name = $1, price = $2 WHERE id = $3 RETURNING *"
+      const sql = "UPDATE products SET product_name = $1, price = $2 WHERE id = $3 RETURNING product_name, price"
       const connection = await client.connect()
       const result = await connection.query(sql, [product_name, price, id])
 

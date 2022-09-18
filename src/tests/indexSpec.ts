@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import { idText } from "typescript";
+
 import app from "../index";
 
 const request = supertest(app);

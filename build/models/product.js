@@ -39,14 +39,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.user_table = void 0;
+exports.store = void 0;
 var database_1 = __importDefault(require("../database"));
-var bcrypt_1 = __importDefault(require("bcrypt"));
-var _a = process.env, PEPPER = _a.PEPPER, SALT_ROUNDS = _a.SALT_ROUNDS;
-var user_table = /** @class */ (function () {
-    function user_table() {
+var store = /** @class */ (function () {
+    function store() {
     }
-    user_table.prototype.index = function () {
+    store.prototype.index = function () {
         return __awaiter(this, void 0, void 0, function () {
             var conn, sql, result, err_1;
             return __generator(this, function (_a) {
@@ -56,7 +54,7 @@ var user_table = /** @class */ (function () {
                         return [4 /*yield*/, database_1.default.connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'SELECT * FROM users';
+                        sql = 'SELECT * FROM products';
                         return [4 /*yield*/, conn.query(sql)];
                     case 2:
                         result = _a.sent();
@@ -64,20 +62,20 @@ var user_table = /** @class */ (function () {
                         return [2 /*return*/, result.rows];
                     case 3:
                         err_1 = _a.sent();
-                        throw new Error("unable to get users: ".concat(err_1));
+                        throw new Error("".concat(err_1));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    user_table.prototype.show = function (id) {
+    store.prototype.show = function (id) {
         return __awaiter(this, void 0, void 0, function () {
             var sql, conn, result, err_2;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
-                        sql = 'SELECT * FROM users WHERE id=($1)';
+                        sql = 'SELECT * FROM products WHERE id=($1)';
                         return [4 /*yield*/, database_1.default.connect()];
                     case 1:
                         conn = _a.sent();
@@ -88,30 +86,29 @@ var user_table = /** @class */ (function () {
                         return [2 /*return*/, result.rows[0]];
                     case 3:
                         err_2 = _a.sent();
-                        throw new Error("unable show the user wit id: ".concat(id, " .. ").concat(err_2));
+                        throw new Error("Error: ".concat(err_2));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    user_table.prototype.create = function (u) {
+    store.prototype.create = function (p) {
         return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, user, err_3;
+            var sql, conn, result, prod, err_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
+                        sql = 'INSERT INTO products (product_name, price) VALUES($1, $2) RETURNING *';
                         return [4 /*yield*/, database_1.default.connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'INSERT INTO users (username, first_name, last_name, password) values ($1, $2, $3, $4) RETURNING *';
-                        return [4 /*yield*/, conn.query(sql, [u.username, u.first_name, u.last_name, (bcrypt_1.default.hashSync("".concat(u.password).concat(PEPPER), parseInt(SALT_ROUNDS)).toString())])];
+                        return [4 /*yield*/, conn.query(sql, [p.product_name, p.price])];
                     case 2:
                         result = _a.sent();
-                        user = result.rows[0];
+                        prod = result.rows[0];
                         conn.release();
-                        console.log("++++++++++++++++++++++++++++++" + user.id);
-                        return [2 /*return*/, user];
+                        return [2 /*return*/, prod];
                     case 3:
                         err_3 = _a.sent();
                         throw new Error("Unable to create a new user: ".concat(err_3));
@@ -120,51 +117,50 @@ var user_table = /** @class */ (function () {
             });
         });
     };
-    user_table.prototype.delete = function (id) {
+    store.prototype.delete = function (id) {
         return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, user, err_4;
+            var sql, conn, result, prod, err_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 3, , 4]);
+                        sql = 'DELETE FROM products WHERE id=($1)';
                         return [4 /*yield*/, database_1.default.connect()];
                     case 1:
                         conn = _a.sent();
-                        sql = 'DELETE FROM users WHERE id=($1) RETURNING *';
                         return [4 /*yield*/, conn.query(sql, [id])];
                     case 2:
                         result = _a.sent();
-                        user = result.rows[0];
+                        prod = result.rows[0];
                         conn.release();
-                        return [2 /*return*/, user];
+                        return [2 /*return*/, prod];
                     case 3:
                         err_4 = _a.sent();
-                        throw new Error("unable delete user (".concat(id, "): ").concat(err_4));
+                        throw new Error("".concat(err_4));
                     case 4: return [2 /*return*/];
                 }
             });
         });
     };
-    user_table.prototype.update = function (newdata) {
+    store.prototype.update = function (prod) {
         return __awaiter(this, void 0, void 0, function () {
-            var id, first_name, last_name, password, sql, conn, result, user, err_5;
+            var id, product_name, price, sql, connection, result, err_5;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        id = newdata.id, first_name = newdata.first_name, last_name = newdata.last_name, password = newdata.password;
+                        id = prod.id, product_name = prod.product_name, price = prod.price;
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 4, , 5]);
-                        sql = "UPDATE users SET first_name = $1, last_name= $2, password= $3 WHERE id = $4 RETURNING *";
+                        sql = "UPDATE products SET product_name = $1, price = $2 WHERE id = $3 RETURNING product_name, price";
                         return [4 /*yield*/, database_1.default.connect()];
                     case 2:
-                        conn = _a.sent();
-                        return [4 /*yield*/, conn.query(sql, [first_name, last_name, (bcrypt_1.default.hashSync("".concat(password).concat(PEPPER), parseInt(SALT_ROUNDS)).toString()), id])];
+                        connection = _a.sent();
+                        return [4 /*yield*/, connection.query(sql, [product_name, price, id])];
                     case 3:
                         result = _a.sent();
-                        user = result.rows[0];
-                        conn.release();
-                        return [2 /*return*/, user];
+                        connection.release();
+                        return [2 /*return*/, result.rows[0]];
                     case 4:
                         err_5 = _a.sent();
                         throw new Error("".concat(err_5));
@@ -173,58 +169,6 @@ var user_table = /** @class */ (function () {
             });
         });
     };
-    user_table.prototype.authenticate = function (username, password) {
-        return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, result, err_6;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 3, , 4]);
-                        return [4 /*yield*/, database_1.default.connect()];
-                    case 1:
-                        conn = _a.sent();
-                        sql = 'SELECT password FROM users WHERE username=$1';
-                        return [4 /*yield*/, conn.query(sql, [username])];
-                    case 2:
-                        result = _a.sent();
-                        if (result.rows.length != 0) {
-                            if (bcrypt_1.default.compareSync("".concat(password).concat(PEPPER), result.rows[0].password)) {
-                                return [2 /*return*/, true];
-                            }
-                            conn.release();
-                            return [2 /*return*/, false];
-                        }
-                        conn.release();
-                        return [2 /*return*/, false];
-                    case 3:
-                        err_6 = _a.sent();
-                        throw new Error("".concat(err_6));
-                    case 4: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    user_table.prototype.deleteAll = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var conn, sql, del, err_7;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, database_1.default.connect()];
-                    case 1:
-                        conn = _a.sent();
-                        sql = 'DELETE FROM users';
-                        del = conn.query(sql);
-                        return [3 /*break*/, 3];
-                    case 2:
-                        err_7 = _a.sent();
-                        throw new Error("".concat(err_7));
-                    case 3: return [2 /*return*/];
-                }
-            });
-        });
-    };
-    return user_table;
+    return store;
 }());
-exports.user_table = user_table;
+exports.store = store;
