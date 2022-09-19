@@ -23,27 +23,35 @@ describe("Order Handler", () => {
       price: 100
     }
 
-    const res = await Table.create(userData)
-    const res2 = await request.post("/users/authenticate").send(userData)
-    
-    token = res2.body.token
-    user_id = res.id as unknown as number
+    try{
+      const res = await Table.create(userData)
+      const res2 = await request.post("/users/authenticate").send(userData)
+      
+      token = res2.body.token
+      user_id = res.id as unknown as number
 
-    const {body} = await request.post("/products/create").set("Authorization", "bearer " + token).send(productData)
-    product_id = body.id
+      const {body} = await request.post("/products/create").set("Authorization", "bearer " + token).send(productData)
+      product_id = body.id
 
-    order = {
-      products: [{
-        product_id,
-        quantity: 5
-      }],
-      user_id
+      order = {
+        products: [{
+          product_id,
+          quantity: 5
+        }],
+        user_id
+      }
+    }catch(err) {
+      throw new Error(`${err}`)
     }
   })
 
   afterAll(async () => {
-    await request.delete(`/users/${user_id}`).set("Authorization", "bearer " + token)
-    await request.delete(`/products/${product_id}`).set("Authorization", "bearer " + token)
+    try{
+      await request.delete(`/users/${user_id}`).set("Authorization", "bearer " + token)
+      await request.delete(`/products/${product_id}`).set("Authorization", "bearer " + token)
+    }catch(err) {
+      throw new Error(`${err}`)
+    }
   })
 
   it("gets the create endpoint", (done) => {

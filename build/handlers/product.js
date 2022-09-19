@@ -41,31 +41,45 @@ var jwt = require('jsonwebtoken');
 var TOKEN_SECRET = process.env.TOKEN_SECRET;
 var Store = new product_1.store();
 var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var list;
+    var list, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Store.index()];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Store.index()];
             case 1:
                 list = _a.sent();
                 res.json(list);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                res.json(err_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 var show = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var prod;
+    var prod, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Store.show(_req.params.id)];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Store.show(_req.params.id)];
             case 1:
                 prod = _a.sent();
                 res.json(prod);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                res.json(err_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 var create = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var prod, newUser, err_1;
+    var prod, newUser, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -82,8 +96,8 @@ var create = function (_req, res) { return __awaiter(void 0, void 0, void 0, fun
                 res.json(newUser);
                 return [3 /*break*/, 4];
             case 3:
-                err_1 = _a.sent();
-                res.json(err_1);
+                err_3 = _a.sent();
+                res.json(err_3);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
@@ -109,7 +123,7 @@ var destroy = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 var update = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var prod, updated, err_2;
+    var prod, updated, err_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -127,9 +141,9 @@ var update = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                 res.json(updated);
                 return [3 /*break*/, 4];
             case 3:
-                err_2 = _a.sent();
+                err_4 = _a.sent();
                 res.status(400);
-                res.json(err_2);
+                res.json(err_4);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
@@ -160,7 +174,7 @@ function checkAuth(req, res, next) {
 }
 var product_routes = function (app) {
     app.get('/products', index);
-    app.get('/products/:id', checkAuth, show);
+    app.get('/products/:id', show);
     app.post('/products/create', checkAuth, create);
     app.put('/products/:id', checkAuth, update);
     app.delete('/products/:id', checkAuth, destroy);

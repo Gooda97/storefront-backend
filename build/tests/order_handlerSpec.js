@@ -47,7 +47,7 @@ var SECRET = process.env.TOKEN_SECRET;
 describe("Order Handler", function () {
     var Table = new user_1.user_table(), token, order, user_id, product_id, order_id;
     beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var userData, productData, res, res2, body;
+        var userData, productData, res, res2, body, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -61,16 +61,19 @@ describe("Order Handler", function () {
                         product_name: "test_prod",
                         price: 100
                     };
-                    return [4 /*yield*/, Table.create(userData)];
+                    _a.label = 1;
                 case 1:
+                    _a.trys.push([1, 5, , 6]);
+                    return [4 /*yield*/, Table.create(userData)];
+                case 2:
                     res = _a.sent();
                     return [4 /*yield*/, request.post("/users/authenticate").send(userData)];
-                case 2:
+                case 3:
                     res2 = _a.sent();
                     token = res2.body.token;
                     user_id = res.id;
                     return [4 /*yield*/, request.post("/products/create").set("Authorization", "bearer " + token).send(productData)];
-                case 3:
+                case 4:
                     body = (_a.sent()).body;
                     product_id = body.id;
                     order = {
@@ -80,20 +83,31 @@ describe("Order Handler", function () {
                             }],
                         user_id: user_id
                     };
-                    return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 5:
+                    err_1 = _a.sent();
+                    throw new Error("".concat(err_1));
+                case 6: return [2 /*return*/];
             }
         });
     }); });
     afterAll(function () { return __awaiter(void 0, void 0, void 0, function () {
+        var err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.delete("/users/".concat(user_id)).set("Authorization", "bearer " + token)];
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, request.delete("/users/".concat(user_id)).set("Authorization", "bearer " + token)];
                 case 1:
                     _a.sent();
                     return [4 /*yield*/, request.delete("/products/".concat(product_id)).set("Authorization", "bearer " + token)];
                 case 2:
                     _a.sent();
-                    return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_2 = _a.sent();
+                    throw new Error("".concat(err_2));
+                case 4: return [2 /*return*/];
             }
         });
     }); });

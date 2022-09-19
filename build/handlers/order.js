@@ -41,31 +41,45 @@ var jwt = require('jsonwebtoken');
 var OrderClass = new order_1.orderClass();
 var TOKEN_SECRET = process.env.TOKEN_SECRET;
 var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var list;
+    var list, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, OrderClass.index()];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, OrderClass.index()];
             case 1:
                 list = _a.sent();
                 res.json(list);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                res.json(err_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 var show = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var prod;
+    var prod, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, OrderClass.show(_req.body.id)];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, OrderClass.show(_req.body.id)];
             case 1:
                 prod = _a.sent();
                 res.json(prod);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                res.json(err_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 var create = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var ord, ordered, err_1;
+    var ord, ordered, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -82,8 +96,8 @@ var create = function (_req, res) { return __awaiter(void 0, void 0, void 0, fun
                 res.json(ordered);
                 return [3 /*break*/, 4];
             case 3:
-                err_1 = _a.sent();
-                res.json(err_1);
+                err_3 = _a.sent();
+                res.json(err_3);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
@@ -113,7 +127,7 @@ function checkAuth(req, res, next) {
     }
 }
 var update = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var ord, updated, err_2;
+    var ord, updated, err_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -131,16 +145,16 @@ var update = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                 res.json(updated);
                 return [3 /*break*/, 4];
             case 3:
-                err_2 = _a.sent();
+                err_4 = _a.sent();
                 res.status(400);
-                res.json(err_2);
+                res.json(err_4);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); };
 var destroy = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var id, result, err_3;
+    var id, result, err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -153,16 +167,16 @@ var destroy = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
                 result = _a.sent();
                 return [2 /*return*/, res.json({ result: result })];
             case 3:
-                err_3 = _a.sent();
+                err_5 = _a.sent();
                 res.status(400);
-                res.json(err_3);
+                res.json(err_5);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); };
 var products_routes = function (app) {
-    app.get('/orders', index);
+    app.get('/orders', checkAuth, index);
     app.get('/orders/:id', checkAuth, show);
     app.post('/orders/create', checkAuth, create);
     app.put('/orders/:id', checkAuth, update);

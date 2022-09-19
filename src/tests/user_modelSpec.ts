@@ -39,77 +39,90 @@ describe("User Model", () => {
     expect(Table.authenticate).toBeDefined()
   })
 
-  // it("Table index method should return a list of users", async () => {
-  //   const list = await Table.index()
-  //   await Table.deleteAll()
-  //   expect(list).toEqual([])
-  // })
-
   it("Table create method should create a user", async () => {
-    
-    const newUser: User = await Table.create(user)
+    try{
+      const newUser: User = await Table.create(user)
 
-    expect({id:newUser.id, username:newUser.username, 
-        first_name:newUser.first_name, last_name:newUser.last_name})
-    .toEqual({id:newUser.id, 
+      expect({id:newUser.id, username:newUser.username, 
+          first_name:newUser.first_name, last_name:newUser.last_name})
+      .toEqual({id:newUser.id, 
         username: user.username,
         first_name: user.first_name,
         last_name: user.last_name,
-    });
-    expect(bcrypt.compareSync(`${user.password}${PEPPER}`, newUser.password)).toBe(true)
+       });
+      expect(bcrypt.compareSync(`${user.password}${PEPPER}`, newUser.password)).toBe(true)
 
 
-    const id = newUser.id as unknown as number;
+      const id = newUser.id as unknown as number;
 
-    await Table.delete(id)
+      await Table.delete(id)
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("Table show method should return the correct users", async () => {
-    const newUser: User = await Table.create(user)
+    try{
+      const newUser: User = await Table.create(user)
 
-    const retrieved = await Table.show(newUser.id as unknown as number)
+      const retrieved = await Table.show(newUser.id as unknown as number)
 
-    expect(retrieved).toEqual(newUser)
+      expect(retrieved).toEqual(newUser)
 
-    await Table.delete(newUser.id as unknown as number)
+      await Table.delete(newUser.id as unknown as number)
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("Table remove method should remove the user", async () => {
-    const newUser: User = await Table.create(user)
+    try{
+      const newUser: User = await Table.create(user)
 
-    await Table.delete(newUser.id as unknown as number)
+      await Table.delete(newUser.id as unknown as number)
 
-    const list = await Table.index()
+      const list = await Table.index()
 
-    expect(list).toEqual([])
+      expect(list).toEqual([])
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("Table update method should update the user", async () => {
-    const newUser: User = await Table.create(user)
-    const newData: User = {
-        username: 'customer',
-        first_name: 'test1',
-        last_name: 'test2',
-        password: 'testpass'
+    try{
+      const newUser: User = await Table.create(user)
+      const newData: User = {
+          username: 'customer',
+          first_name: 'test1',
+          last_name: 'test2',
+          password: 'testpass'
+      }
+
+      const retreived = await Table.update({id: newUser.id, ...newData})    
+
+      expect({first_name: newData.first_name,
+          last_name: newData.last_name
+      })
+      .toEqual({first_name: retreived.first_name,
+          last_name: retreived.last_name})
+
+      expect(bcrypt.compareSync(`${newData.password}${PEPPER}`, retreived.password)).toBe(true)
+
+      await Table.delete(newUser.id as unknown as number)
+    }catch(err){
+      throw new Error(`${err}`)
     }
-
-    const retreived = await Table.update({id: newUser.id, ...newData})    
-
-    expect({first_name: newData.first_name,
-        last_name: newData.last_name
-    })
-    .toEqual({first_name: retreived.first_name,
-         last_name: retreived.last_name})
-
-    expect(bcrypt.compareSync(`${newData.password}${PEPPER}`, retreived.password)).toBe(true)
-
-    await Table.delete(newUser.id as unknown as number)
   })
 
   it("Table authenticate must return null when invalid user", async () => {
-    const authenticated: boolean = await Table.authenticate(user.username, user.password)
+    try{
+      const authenticated: boolean = await Table.authenticate(user.username, user.password)
 
-    expect(authenticated).toBe(false);
+      expect(authenticated).toBe(false);
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
 })

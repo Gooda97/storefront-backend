@@ -6,7 +6,11 @@ const request = supertest(app);
 
 describe('Test the endpoints', ()=> {
     it('Get the / end point', async()=> {
-        const response = await request.get('/');
-        expect(response.status).toBe(200);
+        try{
+            const response = await request.get('/');
+            expect(response.status).toBe(200);
+        }catch(err){
+            throw new Error(`${err}`)
+        }
     })
 })

@@ -44,14 +44,20 @@ var index_1 = __importDefault(require("../index"));
 var request = (0, supertest_1.default)(index_1.default);
 describe('Test the endpoints', function () {
     it('Get the / end point', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var response;
+        var response, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, request.get('/')];
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, request.get('/')];
                 case 1:
                     response = _a.sent();
                     expect(response.status).toBe(200);
-                    return [2 /*return*/];
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _a.sent();
+                    throw new Error("".concat(err_1));
+                case 3: return [2 /*return*/];
             }
         });
     }); });

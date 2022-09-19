@@ -59,7 +59,7 @@ describe("User Handler", function () {
     var tok, userId;
     var userData;
     beforeAll(function () { return __awaiter(void 0, void 0, void 0, function () {
-        var res1, res2, token;
+        var res1, res2, token, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -69,93 +69,111 @@ describe("User Handler", function () {
                         last_name: "l",
                         password: "123"
                     };
-                    return [4 /*yield*/, Table.create(userData)];
+                    _a.label = 1;
                 case 1:
+                    _a.trys.push([1, 4, , 5]);
+                    return [4 /*yield*/, Table.create(userData)];
+                case 2:
                     res1 = _a.sent();
                     return [4 /*yield*/, request.post("/users/authenticate").send(userData)];
-                case 2:
+                case 3:
                     res2 = _a.sent();
                     console.log(res1);
                     console.log(res2.body);
                     token = res2.body.token;
                     tok = token;
                     userId = res1.id;
-                    return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_1 = _a.sent();
+                    throw new Error("".concat(err_1));
+                case 5: return [2 /*return*/];
             }
         });
     }); });
     it("gets the create endpoint", function (done) {
-        request
-            .post("/users/create")
-            .send(userData).set("Authorization", "bearer " + tok)
-            .then(function (res) {
-            var status = res.status;
-            expect(status).toBe(200);
-            done();
-        });
+        try {
+            request.post("/users/create").send(userData).then(function (res) {
+                var status = res.status;
+                expect(status).toBe(200);
+                done();
+            });
+        }
+        catch (err) {
+            throw new Error("".concat(err));
+        }
     });
     it("gets the index endpoint", function (done) {
-        request
-            .get("/users")
-            .set("Authorization", "bearer " + tok)
-            .then(function (res) {
-            expect(res.status).toBe(200);
-            done();
-        });
+        try {
+            request.get("/users").set("Authorization", "bearer " + tok).then(function (res) {
+                expect(res.status).toBe(200);
+                done();
+            });
+        }
+        catch (err) {
+            throw new Error("".concat(err));
+        }
     });
     it("gets the read endpoint", function (done) {
-        request
-            .get("/users/".concat(userId))
-            .set("Authorization", "bearer " + tok)
-            .then(function (res) {
-            expect(res.status).toBe(200);
-            done();
-        });
+        try {
+            request.get("/users/".concat(userId)).set("Authorization", "bearer " + tok).then(function (res) {
+                expect(res.status).toBe(200);
+                done();
+            });
+        }
+        catch (err) {
+            throw new Error("".concat(err));
+        }
     });
     it("gets the update endpoint", function (done) {
         var newUserData = __assign(__assign({}, userData), { first_name: "test11", last_name: "test22" });
-        request
-            .put("/users/".concat(userId))
-            .send(newUserData)
-            .set("Authorization", "bearer " + tok)
-            .then(function (res) {
-            expect(res.status).toBe(200);
-            done();
-        });
+        try {
+            request.put("/users/".concat(userId)).send(newUserData).set("Authorization", "bearer " + tok).then(function (res) {
+                expect(res.status).toBe(200);
+                done();
+            });
+        }
+        catch (err) {
+            throw new Error("".concat(err));
+        }
     });
     it("gets the auth endpoint", function (done) {
-        request
-            .post("/users/authenticate")
-            .send({
-            username: userData.username,
-            password: userData.password
-        })
-            .set("Authorization", "bearer " + tok)
-            .then(function (res) {
-            expect(res.status).toBe(200);
-            done();
-        });
+        try {
+            request.post("/users/authenticate").send({
+                username: userData.username,
+                password: userData.password
+            }).set("Authorization", "bearer " + tok).then(function (res) {
+                expect(res.status).toBe(200);
+                done();
+            });
+        }
+        catch (err) {
+            throw new Error("".concat(err));
+        }
     });
     it("gets the auth endpoint with wrong password", function (done) {
-        request
-            .post("/users/authenticate")
-            .send({
-            username: userData.username,
-            password: "wrongpw"
-        })
-            .set("Authorization", "bearer " + tok)
-            .then(function (res) {
-            expect(res.status).toBe(401);
-            done();
-        });
+        try {
+            request.post("/users/authenticate").send({
+                username: userData.username,
+                password: "wrongpw"
+            }).set("Authorization", "bearer " + tok).then(function (res) {
+                expect(res.status).toBe(401);
+                done();
+            });
+        }
+        catch (err) {
+            throw new Error("".concat(err));
+        }
     });
     it("gets the delete endpoint", function (done) {
-        request
-            .delete("/users/".concat(userId))
-            .set("Authorization", "bearer " + tok)
-            .then(function (res) {
-            expect(res.status).toBe(200);
-            done();
-        });
+        try {
+            request.delete("/users/".concat(userId)).set("Authorization", "bearer " + tok).then(function (res) {
+                expect(res.status).toBe(200);
+                done();
+            });
+        }
+        catch (err) {
+            throw new Error("".concat(err));
+        }
     });
 });

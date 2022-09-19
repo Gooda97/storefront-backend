@@ -9,31 +9,35 @@ const Store = new store()
 describe("Order Model", () => {
     let user_id: number, product_id: number, ord: order
 
-    (async function createUser() {
-        const user: User = await Table.create({
-            username: "customer",
-            first_name: "fname",
-            last_name: "lname",
-            password: "password123"
-        })
-
-
-        user_id = user.id as number;
-        const prod: product= {
-            product_name: "prod_test",
-            price: 100
+    beforeAll(async function createUser() {
+        try{
+            const user: User = await Table.create({
+                username: "customer",
+                first_name: "fname",
+                last_name: "lname",
+                password: "password123"
+            })
+    
+    
+            user_id = user.id as number;
+            const prod: product= {
+                product_name: "prod_test",
+                price: 100
+            }
+            const createdProduct: product = await Store.create(prod)
+            product_id = createdProduct.id as number
+    
+            ord = {
+                products: [{
+                product_id,
+                quantity: 5
+                }],
+                user_id: user_id
+            }
+        }catch(err){
+            throw new Error(`${err}`)
         }
-        const createdProduct: product = await Store.create(prod)
-        product_id = createdProduct.id as number
-
-        ord = {
-            products: [{
-            product_id,
-            quantity: 5
-            }],
-            user_id: user_id
-        }
-    })();
+    });
 
     
 
@@ -58,65 +62,85 @@ describe("Order Model", () => {
     });
 
     it("orders index method should return a list of orders", async () => {
-        const list = await ordersClass.index()
-        expect(list).toEqual([])
+        try{
+            const list = await ordersClass.index()
+            expect(list).toEqual([])
+        }catch(err){
+            throw new Error(`${err}`)
+        }
     });
 
     it("orders add method should add a new order", async () => {
-        const createdOrder: order = await ordersClass.create(ord)
+        try{
+            const createdOrder: order = await ordersClass.create(ord)
 
-        expect(createdOrder).toEqual({
-        id: createdOrder.id,
-        ...ord
-        })
-        const id = createdOrder.id as number
-        await ordersClass.delete(id)
+            expect(createdOrder).toEqual({
+                id: createdOrder.id,
+                ...ord
+            })
+            const id = createdOrder.id as number
+            await ordersClass.delete(id)
+        } catch(err){
+            throw new Error(`${err}`)
+        }
     });
 
     it("orders show method should return the correct orders", async () => {
-        const createdOrder: order = await ordersClass.create(ord)
+        try{
+            const createdOrder: order = await ordersClass.create(ord)
         
-        const id = createdOrder.id as number
-        const retrieved = await ordersClass.show(id)
+            const id = createdOrder.id as number
+            const retrieved = await ordersClass.show(id)
 
-        expect({id:retrieved.id, user_id:retrieved.user_id}).toEqual({id:id, user_id:createdOrder.user_id})
+            expect({id:retrieved.id, user_id:retrieved.user_id}).toEqual({id:id, user_id:createdOrder.user_id})
 
-        await ordersClass.delete(id)
+            await ordersClass.delete(id)
+        }catch(err){
+            throw new Error(`${err}`)
+        }
     });
 
     it("orders update method should update the order", async () => {
-        const createdOrder: order = await ordersClass.create(ord)
-        const id = createdOrder.id as number
+        try{
+            const createdOrder: order = await ordersClass.create(ord)
+            const id = createdOrder.id as number
 
-        const newOrder: order = {
-        id: id,
-        products: [{
-            product_id,
-            quantity: 10
-        }],
-        user_id: user_id
+            const newOrder: order = {
+            id: id,
+            products: [{
+                product_id,
+                quantity: 10
+            }],
+            user_id: user_id
+            }
+
+            const {products} = await ordersClass.update(newOrder)
+
+            expect(products).toEqual(newOrder.products)
+
+            await ordersClass.delete(id)
+        }catch(err){
+            throw new Error(`${err}`)
         }
-
-        const {products} = await ordersClass.update(newOrder)
-
-        expect(products).toEqual(newOrder.products)
-
-        await ordersClass.delete(id)
     });
 
     it("orders delete method should remove the order", async () => {
-        const createdOrder: order = await ordersClass.create(ord)
+        try{
+            const createdOrder: order = await ordersClass.create(ord)
 
-        const id = createdOrder.id as number
+            const id = createdOrder.id as number
 
-        await ordersClass.delete(id)
+            await ordersClass.delete(id)
 
-        const orderList = await ordersClass.index()
+            const orderList = await ordersClass.index()
 
-        expect(orderList).toEqual([])
+            expect(orderList).toEqual([])
 
-        await Table.deleteAll()
-        await Store.delete(product_id);
+            await Table.deleteAll()
+            await Store.delete(product_id);
+        } catch(err){
+            throw new Error(`${err}`)
+        }
     });  
 
     

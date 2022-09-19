@@ -11,10 +11,11 @@
     "down": "db-migrate down",
     "prettier": "prettier --write src/**/*.ts",
     "lint": "eslint src/**/*.ts --fix",
-    "test": "npm run build && jasmine"
+    "test": "npm run build && db-migrate --env test up && cross-env ENV=test jasmine || db-migrate --env test down"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "cross-env": "^7.0.3",
     "db-migrate": "^0.11.13",
     "db-migrate-pg": "^1.2.2",
     "dotenv": "^16.0.2",

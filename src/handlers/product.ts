@@ -11,13 +11,21 @@ const {
 const Store = new store();
 
 const index = async (_req: Request, res: Response) => {
-  const list = await Store.index();
-  res.json(list);
+  try{
+    const list = await Store.index();
+    res.json(list);
+  } catch(err) {
+    res.json(err)
+  }
 };
 
 const show = async (_req: Request, res: Response) => {
-  const prod = await Store.show(_req.params.id as unknown as number)
-  res.json(prod)
+  try{
+    const prod = await Store.show(_req.params.id as unknown as number)
+    res.json(prod)
+  } catch(err){
+    res.json(err)
+  }
 }
 
 const create = async (_req: Request, res: Response) => {
@@ -82,7 +90,7 @@ function checkAuth (req: Request, res: Response, next: express.NextFunction): vo
 
 const product_routes = (app: express.Application) => {
   app.get('/products', index) 
-  app.get('/products/:id', checkAuth, show) 
+  app.get('/products/:id', show) 
   app.post('/products/create' , checkAuth,create)
   app.put('/products/:id', checkAuth, update)
   app.delete('/products/:id', checkAuth, destroy)

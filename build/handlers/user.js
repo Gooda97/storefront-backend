@@ -41,31 +41,45 @@ var _a = process.env, PEPPER = _a.PEPPER, TOKEN_SECRET = _a.TOKEN_SECRET;
 var jwt = require('jsonwebtoken');
 var table = new user_1.user_table();
 var index = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var users;
+    var users, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, table.index()];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, table.index()];
             case 1:
                 users = _a.sent();
                 res.json(users);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                res.json(err_1);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 var show = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user;
+    var user, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, table.show(_req.params.id)];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, table.show(_req.params.id)];
             case 1:
                 user = _a.sent();
                 res.json(user);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                res.json(err_2);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 var create = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, newUser, err_1;
+    var user, newUser, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -85,27 +99,34 @@ var create = function (_req, res) { return __awaiter(void 0, void 0, void 0, fun
                 console.log(newUser.id);
                 return [3 /*break*/, 4];
             case 3:
-                err_1 = _a.sent();
-                res.json(err_1);
+                err_3 = _a.sent();
+                res.json(err_3);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); };
 var destroy = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var deleted;
+    var deleted, err_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, table.delete(_req.params.id)];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, table.delete(_req.params.id)];
             case 1:
                 deleted = _a.sent();
                 res.json(deleted);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_4 = _a.sent();
+                res.json(err_4);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };
 var authenticate = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, username, password, valid, token, err_2;
+    var _a, username, password, valid, token, err_5;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -126,9 +147,9 @@ var authenticate = function (_req, res) { return __awaiter(void 0, void 0, void 
                 }
                 return [3 /*break*/, 4];
             case 3:
-                err_2 = _b.sent();
+                err_5 = _b.sent();
                 res.status(401);
-                res.json(err_2);
+                res.json(err_5);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
@@ -158,7 +179,7 @@ function checkAuth(req, res, next) {
     }
 }
 var update = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var user, updated, err_3;
+    var user, updated, err_6;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -178,22 +199,29 @@ var update = function (req, res) { return __awaiter(void 0, void 0, void 0, func
                 res.json(updated);
                 return [3 /*break*/, 4];
             case 3:
-                err_3 = _a.sent();
-                res.json(err_3);
+                err_6 = _a.sent();
+                res.json(err_6);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/];
         }
     });
 }); };
 var destroyAll = function (_req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var deleted;
+    var deleted, err_7;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, table.deleteAll()];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, table.deleteAll()];
             case 1:
                 deleted = _a.sent();
                 res.json(deleted);
-                return [2 /*return*/];
+                return [3 /*break*/, 3];
+            case 2:
+                err_7 = _a.sent();
+                res.json(err_7);
+                return [3 /*break*/, 3];
+            case 3: return [2 /*return*/];
         }
     });
 }); };

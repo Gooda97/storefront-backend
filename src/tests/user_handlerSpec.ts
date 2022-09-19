@@ -20,44 +20,51 @@ describe("User Handler", () => {
       password: "123"
     }
 
-    const res1 = await Table.create(userData)
-    const res2 = await request.post("/users/authenticate").send(userData)
-    console.log(res1)
-    console.log(res2.body)
-    const {token} = res2.body
-    tok = token
-    userId = res1.id as unknown as number
+    try{
+      const res1 = await Table.create(userData)
+      const res2 = await request.post("/users/authenticate").send(userData)
+      console.log(res1)
+      console.log(res2.body)
+      const {token} = res2.body
+      tok = token
+      userId = res1.id as unknown as number
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("gets the create endpoint", (done) => {
-    request
-    .post("/users/create")
-    .send(userData).set("Authorization", "bearer " + tok)
-    .then((res) => {
-      const {status} = res
-      expect(status).toBe(200)
-      done()
-    })
+    try{
+      request.post("/users/create").send(userData).then((res) => {
+        const {status} = res
+        expect(status).toBe(200)
+        done()
+      })
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("gets the index endpoint", (done) => {
-    request
-    .get("/users")
-    .set("Authorization", "bearer " + tok)
-    .then((res) => {
-      expect(res.status).toBe(200)
-      done()
-    })
+    try{
+      request.get("/users").set("Authorization", "bearer " + tok).then((res) => {
+        expect(res.status).toBe(200)
+        done()
+      })
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("gets the read endpoint", (done) => {
-    request
-    .get(`/users/${userId}`)
-    .set("Authorization", "bearer " + tok)
-    .then((res) => {
-      expect(res.status).toBe(200)
-      done()
-    })
+    try{
+      request.get(`/users/${userId}`).set("Authorization", "bearer " + tok).then((res) => {
+        expect(res.status).toBe(200)
+        done()
+      })
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("gets the update endpoint", (done) => {
@@ -67,51 +74,52 @@ describe("User Handler", () => {
       last_name: "test22"
     }
 
-    request
-    .put(`/users/${userId}`)
-    .send(newUserData)
-    .set("Authorization", "bearer " + tok)
-    .then((res) => {
-      expect(res.status).toBe(200)
-      done()
-    })
+    try{
+      request.put(`/users/${userId}`).send(newUserData).set("Authorization", "bearer " + tok).then((res) => {
+        expect(res.status).toBe(200)
+        done()
+      })
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("gets the auth endpoint", (done) => {
-    request
-    .post("/users/authenticate")
-    .send({
-      username: userData.username,
-      password: userData.password
-    })
-    .set("Authorization", "bearer " + tok)
-    .then((res) => {
-      expect(res.status).toBe(200)
-      done()
-    })
+    try{
+      request.post("/users/authenticate").send({
+        username: userData.username,
+        password: userData.password
+      }).set("Authorization", "bearer " + tok).then((res) => {
+        expect(res.status).toBe(200)
+        done()
+      })
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("gets the auth endpoint with wrong password", (done) => {
-    request
-    .post("/users/authenticate")
-    .send({
-      username: userData.username,
-      password: "wrongpw"
-    })
-    .set("Authorization", "bearer " + tok)
-    .then((res) => {
-      expect(res.status).toBe(401)
-      done()
-    })
+    try{
+      request.post("/users/authenticate").send({
+        username: userData.username,
+        password: "wrongpw"
+      }).set("Authorization", "bearer " + tok).then((res) => {
+        expect(res.status).toBe(401)
+        done()
+      })
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 
   it("gets the delete endpoint", (done) => {
-    request
-    .delete(`/users/${userId}`)
-    .set("Authorization", "bearer " + tok)
-    .then((res) => {
-      expect(res.status).toBe(200)
-      done()
-    })
+    try{
+      request.delete(`/users/${userId}`).set("Authorization", "bearer " + tok).then((res) => {
+        expect(res.status).toBe(200)
+        done()
+      })
+    }catch(err){
+      throw new Error(`${err}`)
+    }
   })
 })

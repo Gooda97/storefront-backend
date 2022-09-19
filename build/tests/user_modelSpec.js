@@ -79,16 +79,13 @@ describe("User Model", function () {
     it("Table should have a authenticate method", function () {
         expect(Table.authenticate).toBeDefined();
     });
-    // it("Table index method should return a list of users", async () => {
-    //   const list = await Table.index()
-    //   await Table.deleteAll()
-    //   expect(list).toEqual([])
-    // })
     it("Table create method should create a user", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var newUser, id;
+        var newUser, id, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Table.create(user)];
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, Table.create(user)];
                 case 1:
                     newUser = _a.sent();
                     expect({ id: newUser.id, username: newUser.username,
@@ -103,15 +100,21 @@ describe("User Model", function () {
                     return [4 /*yield*/, Table.delete(id)];
                 case 2:
                     _a.sent();
-                    return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_1 = _a.sent();
+                    throw new Error("".concat(err_1));
+                case 4: return [2 /*return*/];
             }
         });
     }); });
     it("Table show method should return the correct users", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var newUser, retrieved;
+        var newUser, retrieved, err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Table.create(user)];
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, Table.create(user)];
                 case 1:
                     newUser = _a.sent();
                     return [4 /*yield*/, Table.show(newUser.id)];
@@ -121,15 +124,21 @@ describe("User Model", function () {
                     return [4 /*yield*/, Table.delete(newUser.id)];
                 case 3:
                     _a.sent();
-                    return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_2 = _a.sent();
+                    throw new Error("".concat(err_2));
+                case 5: return [2 /*return*/];
             }
         });
     }); });
     it("Table remove method should remove the user", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var newUser, list;
+        var newUser, list, err_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Table.create(user)];
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, Table.create(user)];
                 case 1:
                     newUser = _a.sent();
                     return [4 /*yield*/, Table.delete(newUser.id)];
@@ -139,15 +148,21 @@ describe("User Model", function () {
                 case 3:
                     list = _a.sent();
                     expect(list).toEqual([]);
-                    return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_3 = _a.sent();
+                    throw new Error("".concat(err_3));
+                case 5: return [2 /*return*/];
             }
         });
     }); });
     it("Table update method should update the user", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var newUser, newData, retreived;
+        var newUser, newData, retreived, err_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Table.create(user)];
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, Table.create(user)];
                 case 1:
                     newUser = _a.sent();
                     newData = {
@@ -168,19 +183,29 @@ describe("User Model", function () {
                     return [4 /*yield*/, Table.delete(newUser.id)];
                 case 3:
                     _a.sent();
-                    return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_4 = _a.sent();
+                    throw new Error("".concat(err_4));
+                case 5: return [2 /*return*/];
             }
         });
     }); });
     it("Table authenticate must return null when invalid user", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var authenticated;
+        var authenticated, err_5;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Table.authenticate(user.username, user.password)];
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, Table.authenticate(user.username, user.password)];
                 case 1:
                     authenticated = _a.sent();
                     expect(authenticated).toBe(false);
-                    return [2 /*return*/];
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_5 = _a.sent();
+                    throw new Error("".concat(err_5));
+                case 3: return [2 /*return*/];
             }
         });
     }); });

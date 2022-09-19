@@ -70,22 +70,30 @@ describe('product model', function () {
         expect(Store.update).toBeDefined();
     });
     it('store index should return a list of products', function () { return __awaiter(void 0, void 0, void 0, function () {
-        var res;
+        var res, err_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Store.index()];
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, Store.index()];
                 case 1:
                     res = _a.sent();
                     expect(res).toEqual([]);
-                    return [2 /*return*/];
+                    return [3 /*break*/, 3];
+                case 2:
+                    err_1 = _a.sent();
+                    throw new Error("".concat(err_1));
+                case 3: return [2 /*return*/];
             }
         });
     }); });
     it("store add should add a new product", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var newProd, id;
+        var newProd, id, err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Store.create(prod)];
+                case 0:
+                    _a.trys.push([0, 3, , 4]);
+                    return [4 /*yield*/, Store.create(prod)];
                 case 1:
                     newProd = _a.sent();
                     expect(newProd).toEqual({
@@ -97,15 +105,21 @@ describe('product model', function () {
                     return [4 /*yield*/, Store.delete(id)];
                 case 2:
                     _a.sent();
-                    return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 3:
+                    err_2 = _a.sent();
+                    throw new Error("".concat(err_2));
+                case 4: return [2 /*return*/];
             }
         });
     }); });
     it("store show should return the correct product", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var newProd, id, retreived;
+        var newProd, id, retreived, err_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Store.create(prod)];
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, Store.create(prod)];
                 case 1:
                     newProd = _a.sent();
                     id = newProd.id;
@@ -116,15 +130,21 @@ describe('product model', function () {
                     return [4 /*yield*/, Store.delete(id)];
                 case 3:
                     _a.sent();
-                    return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_3 = _a.sent();
+                    throw new Error("".concat(err_3));
+                case 5: return [2 /*return*/];
             }
         });
     }); });
     it("store update method should update the product", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var newProd, newData, id, retrieved;
+        var newProd, newData, id, retrieved, err_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Store.create(prod)];
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, Store.create(prod)];
                 case 1:
                     newProd = _a.sent();
                     newData = {
@@ -140,15 +160,21 @@ describe('product model', function () {
                     return [4 /*yield*/, Store.delete(id)];
                 case 3:
                     _a.sent();
-                    return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_4 = _a.sent();
+                    throw new Error("".concat(err_4));
+                case 5: return [2 /*return*/];
             }
         });
     }); });
     it("Store remove method should remove the product", function () { return __awaiter(void 0, void 0, void 0, function () {
-        var newprod, list;
+        var newprod, list, err_5;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Store.create(prod)];
+                case 0:
+                    _a.trys.push([0, 4, , 5]);
+                    return [4 /*yield*/, Store.create(prod)];
                 case 1:
                     newprod = _a.sent();
                     return [4 /*yield*/, Store.delete(newprod.id)];
@@ -158,7 +184,11 @@ describe('product model', function () {
                 case 3:
                     list = _a.sent();
                     expect(list).toEqual([]);
-                    return [2 /*return*/];
+                    return [3 /*break*/, 5];
+                case 4:
+                    err_5 = _a.sent();
+                    throw new Error("".concat(err_5));
+                case 5: return [2 /*return*/];
             }
         });
     }); });

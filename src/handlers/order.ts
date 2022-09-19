@@ -11,13 +11,21 @@ const {
 } = process.env;
 
 const index = async (_req: Request, res: Response) => {
-  const list = await OrderClass.index();
-  res.json(list);
+  try{
+    const list = await OrderClass.index();
+    res.json(list);
+  } catch(err) {
+    res.json(err)
+  }
 };
 
 const show = async (_req: Request, res: Response) => {
-  const prod = await OrderClass.show(_req.body.id)
-  res.json(prod)
+  try{
+    const prod = await OrderClass.show(_req.body.id)
+    res.json(prod)
+  } catch(err) {
+    res.json(err)
+  }
 };
 
 const create = async (_req: Request, res: Response) => {
@@ -83,7 +91,7 @@ const destroy = async (req: Request, res:Response) => {
 }
 
 const products_routes = (app: express.Application) => {
-  app.get('/orders', index)
+  app.get('/orders', checkAuth, index)
   app.get('/orders/:id', checkAuth, show)
   app.post('/orders/create',checkAuth ,create)
   app.put('/orders/:id',checkAuth, update)

@@ -12,14 +12,22 @@ const table = new user_table();
 
 const index = async(_req: Request, res:Response) => 
 {
-  const users = await table.index();
-  res.json(users);
+  try {
+    const users = await table.index();
+    res.json(users);
+  } catch(err) {
+    res.json(err)
+  }
 }
 
 const show = async(_req: Request, res: Response) => 
 {
-  const user = await table.show(_req.params.id as unknown as number);
-  res.json(user);
+  try{
+    const user = await table.show(_req.params.id as unknown as number);
+    res.json(user);
+  } catch(err) {
+    res.json(err)
+  }
 }
 
 const create = async (_req: express.Request, res: express.Response) => {
@@ -39,8 +47,12 @@ const create = async (_req: express.Request, res: express.Response) => {
 }
 
 const destroy = async (_req: Request, res: Response) => {
-  const deleted = await table.delete(_req.params.id as unknown as number)
-  res.json(deleted)
+  try{
+    const deleted = await table.delete(_req.params.id as unknown as number)
+    res.json(deleted)
+  } catch(err) {
+    res.json(err)
+  }
 }
 
 const authenticate = async (_req: Request, res: Response) => {
@@ -102,8 +114,12 @@ const update = async (req: express.Request, res: express.Response) => {
 }
 
 const destroyAll = async (_req: Request, res: Response) => {
-  const deleted = await table.deleteAll()
-  res.json(deleted)
+  try{
+    const deleted = await table.deleteAll()
+    res.json(deleted)
+  } catch(err) {
+    res.json(err)
+  }
 }
 
 const users_routes = (app: express.Application) => {
